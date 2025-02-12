@@ -2,37 +2,37 @@
 use strict;
 use warnings;
 
-# ƒfƒBƒŒƒNƒgƒŠ‚Ìİ’è
+# ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®è¨­å®š
 my $txt_dir = "/source/blast/Mucispirillum_schaedleri_ASF457/BS_result/hypothetical";
-my $fasta_dir = "/source4/blast/Mucispirillum_schaedleri_ASF457";
+my $fasta_dir = "/source/blast/Mucispirillum_schaedleri_ASF457";
 my $output_dir = "/source/blast/Mucispirillum_schaedleri_ASF457/BS_result/PSIresult/";
 my $db_path = "/source/DB/bacteria_strain_DB/DBall/BSDBall";
 
-# o—ÍƒfƒBƒŒƒNƒgƒŠ‚Ìì¬
+# å‡ºåŠ›ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®ä½œæˆ
 mkdir $output_dir unless -d $output_dir;
 
-# txtƒfƒBƒŒƒNƒgƒŠ“à‚Ìƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚Ş
+# txtãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªå†…ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚€
 opendir(my $dh, $txt_dir) or die "Cannot open directory $txt_dir: $!";
 my @txt_files = grep { /\.txt$/ && -f "$txt_dir/$_" } readdir($dh);
 closedir($dh);
 
-# Šetxtƒtƒ@ƒCƒ‹‚ğˆ—
+# å„txtãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‡¦ç†
 foreach my $txt_file (@txt_files) {
-    # ƒtƒ@ƒCƒ‹–¼‚ÌŠg’£q‚ğæ‚èœ‚­
+    # ãƒ•ã‚¡ã‚¤ãƒ«åã®æ‹¡å¼µå­ã‚’å–ã‚Šé™¤ã
     my ($base_name) = $txt_file =~ /^(.*)\.txt$/;
 
-    # ‘Î‰‚·‚éfastaƒtƒ@ƒCƒ‹‚ğŠm”F
+    # å¯¾å¿œã™ã‚‹fastaãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç¢ºèª
     my $fasta_file = "$fasta_dir/$base_name.fasta";
     if (-e $fasta_file) {
         print "Processing $fasta_file with PSIBLAST...\n";
 
-        # PSIBLASTƒRƒ}ƒ“ƒh‚ğ\’z
+        # PSIBLASTã‚³ãƒãƒ³ãƒ‰ã‚’æ§‹ç¯‰
         my $output_file = "$output_dir/$base_name.txt";
         my $psiblast_cmd = "psiblast -query $fasta_file -db $db_path -max_target_seqs 100 ".
                            "-out $output_file -evalue 0.05 -num_iterations 3 ".
                            "-threshold 0.0001 -num_threads 10";
 
-        # ƒRƒ}ƒ“ƒh‚ğÀs
+        # ã‚³ãƒãƒ³ãƒ‰ã‚’å®Ÿè¡Œ
         system($psiblast_cmd) == 0
             or warn "Failed to run PSIBLAST for $fasta_file: $!";
     } else {
